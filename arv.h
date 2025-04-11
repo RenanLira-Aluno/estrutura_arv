@@ -156,3 +156,57 @@ int tem(Arv a, Item x) {
         return tem(a->dir, x);
 }
 
+int eb(Arv A) {
+    if (A == NULL) return 1; 
+    if ((A->esq == NULL && A->dir != NULL) || (A->esq != NULL && A->dir == NULL)) 
+        return 0; 
+    return eb(A->esq) && eb(A->dir);
+}
+
+int igual(Arv A, Arv B) {
+    if (A == NULL && B == NULL) 
+        return 1; 
+    if (A == NULL || B == NULL) 
+        return 0;
+    if (A->item != B->item) 
+        return 0;
+    return igual(A->esq, B->esq) && igual(A->dir, B->dir); 
+}
+
+int valor(Arv A) {
+    if (A == NULL) return 0;
+    
+    if (isdigit(A->item)) {
+        return A->item - '0';
+    }
+    
+    int esq = valor(A->esq);
+    int dir = valor(A->dir);
+    
+    switch (A->item) {
+        case '+': return esq + dir;
+        case '-': return esq - dir;
+        case '*': return esq * dir;
+        case '/': return esq / dir;
+        default: 
+            printf("Operador inválido: %c\n", A->item);
+            return 0;
+    }
+}
+
+void exibe_expressao(Arv A) {
+    if (A == NULL) return;
+    
+    if (A->esq != NULL || A->dir != NULL) printf("(");
+    exibe_expressao(A->esq);
+    printf("%c", A->item);
+    exibe_expressao(A->dir);
+    if (A->esq != NULL || A->dir != NULL) printf(")");
+}
+
+void exibe_dec(Arv A) {
+    if (A == NULL) return;
+    exibe_dec(A->dir);   
+    printf(fmt, A->item); 
+    exibe_dec(A->esq);  
+}
